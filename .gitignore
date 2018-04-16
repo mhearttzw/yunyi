@@ -13,3 +13,7 @@ generatorConfig.xml
 *.lock
 /build/
 *.settings
+
+*.jpg
+**/resources/coverImgs/
+**/passageImgs/*
