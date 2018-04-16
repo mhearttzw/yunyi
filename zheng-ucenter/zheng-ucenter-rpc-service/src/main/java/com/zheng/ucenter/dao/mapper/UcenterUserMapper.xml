@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zheng.ucenter.dao.mapper.UcenterUserMapper">
+
+  <resultMap id="BaseResultMap" type="com.zheng.ucenter.dao.model.UcenterUser">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="salt" jdbcType="VARCHAR" property="salt" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="sex" jdbcType="TINYINT" property="sex" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_ip" jdbcType="VARCHAR" property="createIp" />
+    <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="user_uuid" jdbcType="VARCHAR" property="userUuid"/>
+  </resultMap>
+
+  <resultMap id="CmsArticleMap" type="com.zheng.ucenter.dao.model.CmsArticle">
+    <id column="article_id" jdbcType="INTEGER" property="articleId"/>
+    <result column="topic_id" jdbcType="INTEGER" property="topicId"/>
+    <result column="title" jdbcType="VARCHAR" property="title"/>
+    <result column="author" jdbcType="VARCHAR" property="author"/>
+    <result column="fromurl" jdbcType="VARCHAR" property="fromurl"/>
+    <result column="image" jdbcType="VARCHAR" property="image"/>
+    <result column="keywords" jdbcType="VARCHAR" property="keywords"/>
+    <result column="description" jdbcType="VARCHAR" property="description"/>
+    <result column="type" jdbcType="TINYINT" property="type"/>
+    <result column="allowcomments" jdbcType="TINYINT" property="allowcomments"/>
+    <result column="status" jdbcType="TINYINT" property="status"/>
+    <result column="content" jdbcType="VARCHAR" property="status"/>
+    <result column="user_id" jdbcType="INTEGER" property="userId"/>
+    <result column="readnumber" jdbcType="INTEGER" property="readnumber"/>
+    <result column="top" jdbcType="INTEGER" property="top"/>
+    <result column="system_id" jdbcType="INTEGER" property="systemId"/>
+    <result column="ctime" jdbcType="BIGINT" property="ctime"/>
+    <result column="orders" jdbcType="BIGINT" property="orders"/>
+    <result column="private_type" jdbcType="INTEGER" property="privateType"/>
+    <result column="like_num" jdbcType="INTEGER" property="likeNum"/>
+    <result column="comment_num" jdbcType="INTEGER" property="commentNum"/>
+    <result column="user_uuid" jdbcType="VARCHAR" property="userUuid"/>
+    <result column="share_num" jdbcType="INTEGER" property="shareNum"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+  </resultMap>
+
+  <!--<resultMap id="CmsArticleDto" type="com.zheng.ucenter.dao.model.dto.CmsArticleDto">
+    <association property="ucenter" column=""
+  </resultMap>-->
+
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+
+  <sql id="Base_Column_List">
+    user_id, password, salt, nickname, sex, avatar, create_time, create_ip, last_login_time, 
+    last_login_ip, phone
+  </sql>
+
+  <select id="selectByExample" parameterType="com.zheng.ucenter.dao.model.UcenterUserExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ucenter_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ucenter_user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+
+  <!-- 根据用户名（手机号）查询用户 -->
+  <select id="selectByPhone" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Base_Column_List"/>
+    FROM ucenter_user
+      WHERE phone = #{phone,jdbcType=VARCHAR} OR nickname = #{phone}
+  </select>
+
+  <!-- 根据昵称查询用户 -->
+  <select id="selectByNickname" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM ucenter_user
+    WHERE nickname = #{nickname,jdbcType=VARCHAR}
+  </select>
+
+  <!-- 创建用户uuid -->
+  <select id="selectUserUuidByUserName" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT user_uuid FROM ucenter_user
+    WHERE phone = #{userName, jdbcType=VARCHAR}
+  </select>
+
+  <!-- 用户密码验证 -->
+  <select id="selectByPassword" resultMap="BaseResultMap">
+      SELECT
+      <include refid="Base_Column_List"/>
+      FROM ucenter_user
+      WHERE phone = #{phone,jdbcType=VARCHAR} AND password = #{password,jdbcType=VARCHAR}
+  </select>
+
+  <!-- 昵称密码验证 -->
+  <select id="selectByNickAndPwd" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM ucenter_user
+    WHERE nickname = #{nickname,jdbcType=VARCHAR} AND password = #{password,jdbcType=VARCHAR}
+  </select>
+
+  <!-- 分页文章查询 -->
+  <select id="selectArticleByPage" resultType="com.zheng.ucenter.dao.model.dto.CmsArticleDto">
+    SELECT A.title AS title, A.author as author, A.image as image, A.readnumber as readnumber,
+           A.like_num AS like_num, A.passage_uuid AS passage_uuid, A.share_num AS share_num,
+           A.comment_num AS comment_num,
+           B.nickname AS nickname, B.avatar AS avatar, B.user_uuid AS user_uuid
+    FROM cms_article A
+      INNER JOIN ucenter_user B
+        ON A.user_uuid = B.user_uuid
+    WHERE article_id > #{cursor,jdbcType=INTEGER} LIMIT #{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ucenter_user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.zheng.ucenter.dao.model.UcenterUserExample">
+    delete from ucenter_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+
+  <!-- 添加用户 -->
+  <insert id="insert" parameterType="com.zheng.ucenter.dao.model.UcenterUser">
+    insert into ucenter_user (user_id, password, salt, 
+      nickname, sex, avatar,
+      create_time, create_ip, last_login_time, 
+      last_login_ip, phone, user_uuid)
+    values (#{userId,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, 
+      #{nickname,jdbcType=VARCHAR}, #{sex,jdbcType=TINYINT}, #{avatar,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createIp,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, 
+      #{lastLoginIp,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{userUuid,jdbcType=VARCHAR})
+  </insert>
+
+  <!-- 添加文章 -->
+  <insert id="insertArticle" parameterType="com.zheng.ucenter.dao.model.CmsArticle">
+    INSERT INTO cms_article
+    (article_id, topic_id, title, author, fromurl, image, keywords, description,
+     type, allowcomments, status, content, user_id, readnumber, top, system_id,
+     ctime, orders, private_type, like_num, comment_num, user_uuid, passage_uuid)
+            VALUES (#{articleId,jdbcType=INTEGER}, #{topicId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR},
+                    #{author,jdbcType=VARCHAR}, #{fromurl,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR},
+                    #{keywords,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
+                    #{allowcomments,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{content,jdbcType=LONGVARCHAR},
+                    #{userId,jdbcType=INTEGER}, #{readnumber,jdbcType=INTEGER}, #{top,jdbcType=INTEGER},
+                    #{systemId,jdbcType=INTEGER}, #{ctime,jdbcType=BIGINT}, #{orders,jdbcType=BIGINT},
+                    #{privateType,jdbcType=INTEGER}, #{likeNum,jdbcType=INTEGER}, #{commentNum,jdbcType=INTEGER},
+                    #{userUuid,jdbcType=VARCHAR},  #{passageUuid,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.zheng.ucenter.dao.model.UcenterUser">
+    insert into ucenter_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="salt != null">
+        salt,
+      </if>
+      <if test="nickname != null">
+        nickname,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="avatar != null">
+        avatar,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createIp != null">
+        create_ip,
+      </if>
+      <if test="lastLoginTime != null">
+        last_login_time,
+      </if>
+      <if test="lastLoginIp != null">
+        last_login_ip,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null">
+        #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=TINYINT},
+      </if>
+      <if test="avatar != null">
+        #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createIp != null">
+        #{createIp,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null">
+        #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastLoginIp != null">
+        #{lastLoginIp,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.zheng.ucenter.dao.model.UcenterUserExample" resultType="java.lang.Long">
+    select count(*) from ucenter_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+
+  <update id="updatePassword" parameterType="java.lang.String">
+    UPDATE ucenter_user
+    SET password = #{password,jdbcType=VARCHAR}
+    WHERE phone = #{phone,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByExampleSelective" parameterType="map">
+    update ucenter_user
+    <set>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.password != null">
+        password = #{record.password,jdbcType=VARCHAR},
+      </if>
+      <if test="record.salt != null">
+        salt = #{record.salt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nickname != null">
+        nickname = #{record.nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sex != null">
+        sex = #{record.sex,jdbcType=TINYINT},
+      </if>
+      <if test="record.avatar != null">
+        avatar = #{record.avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createIp != null">
+        create_ip = #{record.createIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastLoginTime != null">
+        last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.lastLoginIp != null">
+        last_login_ip = #{record.lastLoginIp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update ucenter_user
+    set user_id = #{record.userId,jdbcType=INTEGER},
+      password = #{record.password,jdbcType=VARCHAR},
+      salt = #{record.salt,jdbcType=VARCHAR},
+      nickname = #{record.nickname,jdbcType=VARCHAR},
+      sex = #{record.sex,jdbcType=TINYINT},
+      avatar = #{record.avatar,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      create_ip = #{record.createIp,jdbcType=VARCHAR},
+      last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP},
+      last_login_ip = #{record.lastLoginIp,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zheng.ucenter.dao.model.UcenterUser">
+    update ucenter_user
+    <set>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null">
+        salt = #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=TINYINT},
+      </if>
+      <if test="avatar != null">
+        avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createIp != null">
+        create_ip = #{createIp,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null">
+        last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastLoginIp != null">
+        last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zheng.ucenter.dao.model.UcenterUser">
+    update ucenter_user
+    set password = #{password,jdbcType=VARCHAR},
+      salt = #{salt,jdbcType=VARCHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=TINYINT},
+      avatar = #{avatar,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_ip = #{createIp,jdbcType=VARCHAR},
+      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      last_login_ip = #{lastLoginIp,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+</mapper>
